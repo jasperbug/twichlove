@@ -1,0 +1,264 @@
+{
+  "currentProgress": 0,
+  "lastUpdated": "2025-07-22T14:14:57.905Z",
+  "history": [
+    {
+      "timestamp": "2025-07-22T12:27:54.953Z",
+      "oldProgress": -29,
+      "newProgress": -29,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "表情符號，無明顯情感傾向",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:28:00.399Z",
+      "oldProgress": -29,
+      "newProgress": -29,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "普通聊天，沒有明顯情感傾向",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:28:03.188Z",
+      "oldProgress": -29,
+      "newProgress": -29,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "分析失敗，預設中性",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:28:20.651Z",
+      "oldProgress": -29,
+      "newProgress": -34,
+      "change": -5,
+      "requestedChange": -5,
+      "metadata": {
+        "sentiment": "negative",
+        "score": -5,
+        "reason": "使用極端仇恨語言，表達對主播強烈的負面情緒",
+        "category": "toxic"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:28:23.765Z",
+      "oldProgress": -34,
+      "newProgress": -34,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "純粹詢問明天的主題，沒有情感傾向",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:28:25.006Z",
+      "oldProgress": -34,
+      "newProgress": -34,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "訊息內容為法律條文說明，無情感表達",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:28:33.886Z",
+      "oldProgress": -34,
+      "newProgress": -34,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "訊息內容不明確，無明顯情感傾向",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:28:58.977Z",
+      "oldProgress": -34,
+      "newProgress": -34,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "訊息只是建議或提議，沒有明顯情感色彩",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:29:06.867Z",
+      "oldProgress": -34,
+      "newProgress": -34,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "訊息內容為提問與討論，無明顯情感傾向",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:29:08.457Z",
+      "oldProgress": -34,
+      "newProgress": -34,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "訊息為普通聊天，沒有明顯情感傾向",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:29:19.868Z",
+      "oldProgress": -34,
+      "newProgress": -37,
+      "change": -3,
+      "requestedChange": -3,
+      "metadata": {
+        "sentiment": "negative",
+        "score": -3,
+        "reason": "明確表達不喜歡主播，帶有明顯批評意味",
+        "category": "criticism"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:29:28.328Z",
+      "oldProgress": -37,
+      "newProgress": -37,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "普通聊天用語，沒有明顯情感傾向",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:29:56.833Z",
+      "oldProgress": -37,
+      "newProgress": -37,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "語句模糊，無明顯情感傾向，屬於普通評論",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:30:07.609Z",
+      "oldProgress": -37,
+      "newProgress": -37,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "簡短肯定詞，無明顯情感傾向",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:30:10.077Z",
+      "oldProgress": -37,
+      "newProgress": -37,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "簡短回應，無明顯情感表達",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:30:12.908Z",
+      "oldProgress": -37,
+      "newProgress": -40,
+      "change": -3,
+      "requestedChange": -3,
+      "metadata": {
+        "sentiment": "negative",
+        "score": -3,
+        "reason": "語氣帶有明顯的貶低和否定意味，對主播或觀眾群體表現出不滿",
+        "category": "criticism"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:30:35.938Z",
+      "oldProgress": -40,
+      "newProgress": -40,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "訊息內容模糊，沒有明確的情感表達，屬於普通聊天",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:31:01.911Z",
+      "oldProgress": -40,
+      "newProgress": -40,
+      "change": 0,
+      "requestedChange": 0,
+      "metadata": {
+        "sentiment": "neutral",
+        "score": 0,
+        "reason": "分析失敗，預設中性",
+        "category": "neutral"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T12:31:28.369Z",
+      "oldProgress": -40,
+      "newProgress": -43,
+      "change": -3,
+      "requestedChange": -3,
+      "metadata": {
+        "sentiment": "negative",
+        "score": -3,
+        "reason": "表達對主播的強烈負面情緒，但語氣較輕，並以晚安結束",
+        "category": "criticism"
+      }
+    },
+    {
+      "timestamp": "2025-07-22T14:14:57.905Z",
+      "oldProgress": -43,
+      "newProgress": 0,
+      "change": 43,
+      "requestedChange": 43,
+      "metadata": {
+        "type": "manual_set",
+        "targetValue": 0
+      }
+    }
+  ]
+}

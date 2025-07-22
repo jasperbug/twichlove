@@ -1,0 +1,24 @@
+{
+  "name": "twitch-chat-progress-controller",
+  "version": "1.0.0",
+  "description": "控制好感度進度條的 Twitch 聊天室監控程式",
+  "main": "twitch-chat-controller.js",
+  "scripts": {
+    "start": "node twitch-chat-controller.js",
+    "test": "node twitch-chat-controller.js shroud"
+  },
+  "dependencies": {
+    "ws": "^8.14.2",
+    "openai": "^4.28.0",
+    "dotenv": "^16.3.1"
+  },
+  "keywords": [
+    "twitch",
+    "chat",
+    "websocket",
+    "progress",
+    "obs"
+  ],
+  "author": "",
+  "license": "MIT"
+}

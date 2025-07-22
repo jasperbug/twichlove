@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>好感度顯示器 💕</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: transparent;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .progress-container {
+            width: 60px;
+            height: 500px;
+            position: relative;
+            background: rgba(128, 128, 128, 0.1);
+            border-radius: 30px;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            overflow: visible;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .zero-line {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.5);
+            z-index: 5;
+        }
+
+        .zero-label {
+            position: absolute;
+            top: 50%;
+            right: -35px;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .progress-bar-positive {
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(to top, #ff69b4, #ff1493, #ff69b4, #ffc0cb, #ffb6c1);
+            position: absolute;
+            bottom: 50%;
+            border-radius: inherit;
+            transition: height 0.5s ease-in-out;
+            box-shadow: 0 0 15px rgba(255, 105, 180, 0.6);
+            overflow: hidden;
+            border-top-left-radius: 27px;
+            border-top-right-radius: 27px;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .progress-bar-negative {
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(to bottom, #404040, #666666, #808080, #999999);
+            position: absolute;
+            top: 50%;
+            border-radius: inherit;
+            transition: height 0.5s ease-in-out;
+            box-shadow: 0 0 15px rgba(64, 64, 64, 0.6);
+            overflow: hidden;
+            border-bottom-left-radius: 27px;
+            border-bottom-right-radius: 27px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            z-index: 10;
+        }
+
+        .love-level {
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .progress-label {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #ff69b4;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        .control-buttons {
+            position: absolute;
+            bottom: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            background: rgba(128, 128, 128, 0.3);
+            border: 2px solid rgba(128, 128, 128, 0.5);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 10px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        button:hover {
+            background: rgba(128, 128, 128, 0.5);
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(128, 128, 128, 0.6);
+        }
+
+        .positive-btn {
+            background: rgba(255, 105, 180, 0.3);
+            border: 2px solid rgba(255, 105, 180, 0.5);
+        }
+
+        .positive-btn:hover {
+            background: rgba(255, 105, 180, 0.5);
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.6);
+        }
+
+        .negative-btn {
+            background: rgba(64, 64, 64, 0.5);
+            border: 2px solid rgba(64, 64, 64, 0.7);
+        }
+
+        .negative-btn:hover {
+            background: rgba(64, 64, 64, 0.7);
+            box-shadow: 0 0 10px rgba(64, 64, 64, 0.8);
+        }
+
+        .glow {
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 15px rgba(255, 105, 180, 0.6);
+            }
+            to {
+                box-shadow: 0 0 30px rgba(255, 105, 180, 0.9), 0 0 45px rgba(255, 20, 147, 0.7);
+            }
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 12px;
+            color: #ff69b4;
+            animation: heartFloat 3s infinite;
+            z-index: 15;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-10px) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-40px) scale(0.5);
+            }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #ffb6c1;
+            border-radius: 50%;
+            animation: sparkle 1.5s infinite;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .floating-heart {
+            position: absolute;
+            font-size: 20px;
+            color: #ff69b4;
+            animation: floatUp 4s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 0;
+                transform: translateY(50px) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+
+        .broken-heart {
+            position: absolute;
+            font-size: 12px;
+            color: #808080;
+            animation: heartBreak 3s infinite;
+            z-index: 15;
+        }
+
+        @keyframes heartBreak {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.5) rotate(0deg);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(10px) scale(1) rotate(180deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(40px) scale(0.5) rotate(360deg);
+            }
+        }
+
+        .rain-drop {
+            position: absolute;
+            font-size: 16px;
+            color: #666666;
+            animation: rainFall 4s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rainFall {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100px) rotate(10deg);
+            }
+        }
+
+        .dark-glow {
+            animation: darkGlow 2s infinite alternate;
+        }
+
+        @keyframes darkGlow {
+            from {
+                box-shadow: 0 0 15px rgba(64, 64, 64, 0.6);
+            }
+            to {
+                box-shadow: 0 0 30px rgba(64, 64, 64, 0.9), 0 0 45px rgba(32, 32, 32, 0.7);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-container">
+        <div class="love-level" id="loveLevel">💔 陌生人</div>
+        <div class="zero-line"></div>
+        <div class="zero-label">0</div>
+        <div class="progress-bar-positive" id="progressBarPositive"></div>
+        <div class="progress-bar-negative" id="progressBarNegative"></div>
+        <div class="progress-text" id="progressText">0%</div>
+        
+        <div class="control-buttons">
+            <div class="button-row">
+                <button class="negative-btn" onclick="adjustProgress(-5)">-5%</button>
+                <button class="negative-btn" onclick="adjustProgress(-3)">-3%</button>
+                <button class="negative-btn" onclick="adjustProgress(-1)">-1%</button>
+            </div>
+            <div class="button-row">
+                <button onclick="setProgress(0)">Reset</button>
+            </div>
+            <div class="button-row">
+                <button class="positive-btn" onclick="adjustProgress(1)">+1%</button>
+                <button class="positive-btn" onclick="adjustProgress(3)">+3%</button>
+                <button class="positive-btn" onclick="adjustProgress(5)">+5%</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProgress = 0;
+        const progressBarPositive = document.getElementById('progressBarPositive');
+        const progressBarNegative = document.getElementById('progressBarNegative');
+        const progressText = document.getElementById('progressText');
+        const loveLevel = document.getElementById('loveLevel');
+        
+        const loveStages = {
+            '-100': { text: '💀 仇恨', color: '#404040' },
+            '-75': { text: '😡 厭惡', color: '#666666' },
+            '-50': { text: '😒 不喜歡', color: '#808080' },
+            '-25': { text: '😐 無感', color: '#999999' },
+            '0': { text: '💔 陌生人', color: '#cccccc' },
+            '25': { text: '😊 朋友', color: '#ff69b4' },
+            '50': { text: '💗 好朋友', color: '#ff1493' },
+            '75': { text: '💖 喜歡', color: '#ff1493' },
+            '100': { text: '💕 深愛', color: '#ff69b4' }
+        };
+
+        function setProgress(percentage) {
+            currentProgress = percentage;
+            progressText.textContent = percentage + '%';
+            
+            // 重置進度條
+            progressBarPositive.style.height = '0%';
+            progressBarNegative.style.height = '0%';
+            
+            // 設置進度條高度 (最多50%避免溢出)
+            if (percentage > 0) {
+                const height = Math.min(percentage, 100) * 0.5; // 最多50%高度
+                progressBarPositive.style.height = height + '%';
+            } else if (percentage < 0) {
+                const height = Math.min(Math.abs(percentage), 100) * 0.5; // 最多50%高度
+                progressBarNegative.style.height = height + '%';
+            }
+            
+            // 更新好感度階段
+            updateLoveStage(percentage);
+            
+            // 清除所有效果
+            progressBarPositive.classList.remove('glow');
+            progressBarNegative.classList.remove('dark-glow');
+            removeHearts();
+            removeBrokenHearts();
+            
+            // 添加效果
+            if (percentage >= 100) {
+                progressBarPositive.classList.add('glow');
+                createHearts();
+                createFloatingHearts();
+            } else if (percentage <= -100) {
+                progressBarNegative.classList.add('dark-glow');
+                createBrokenHearts();
+                createRainDrops();
+            } else if (percentage >= 50) {
+                createHearts();
+            } else if (percentage <= -50) {
+                createBrokenHearts();
+            }
+            
+            // 根據進度改變顏色
+            updateProgressColor(percentage);
+        }
+        
+        function updateLoveStage(percentage) {
+            let stage = loveStages['0'];
+            
+            if (percentage <= -75) stage = loveStages['-100'];
+            else if (percentage <= -50) stage = loveStages['-75'];
+            else if (percentage <= -25) stage = loveStages['-50'];
+            else if (percentage < 0) stage = loveStages['-25'];
+            else if (percentage === 0) stage = loveStages['0'];
+            else if (percentage < 25) stage = loveStages['25'];
+            else if (percentage < 50) stage = loveStages['25'];
+            else if (percentage < 75) stage = loveStages['50'];
+            else if (percentage < 100) stage = loveStages['75'];
+            else stage = loveStages['100'];
+            
+            loveLevel.textContent = stage.text;
+        }
+
+        function updateProgressColor(percentage) {
+            if (percentage > 0) {
+                let color;
+                if (percentage < 25) {
+                    color = 'linear-gradient(to top, #ff69b4, #ffb6c1)';
+                } else if (percentage < 50) {
+                    color = 'linear-gradient(to top, #ff69b4, #ff1493)';
+                } else if (percentage < 75) {
+                    color = 'linear-gradient(to top, #ff1493, #ff69b4)';
+                } else {
+                    color = 'linear-gradient(to top, #ff1493, #ff69b4, #ffb6c1)';
+                }
+                progressBarPositive.style.background = color;
+            } else if (percentage < 0) {
+                let color;
+                const absPercentage = Math.abs(percentage);
+                if (absPercentage < 25) {
+                    color = 'linear-gradient(to bottom, #808080, #999999)';
+                } else if (absPercentage < 50) {
+                    color = 'linear-gradient(to bottom, #666666, #808080)';
+                } else if (absPercentage < 75) {
+                    color = 'linear-gradient(to bottom, #404040, #666666)';
+                } else {
+                    color = 'linear-gradient(to bottom, #202020, #404040, #666666)';
+                }
+                progressBarNegative.style.background = color;
+            }
+        }
+
+        function createHearts() {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.textContent = '💖';
+                    heart.style.left = (Math.random() * 80 + 10) + '%';
+                    heart.style.top = (Math.random() * 80 + 10) + '%';
+                    progressBarPositive.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        if (heart.parentNode) {
+                            heart.parentNode.removeChild(heart);
+                        }
+                    }, 3000);
+                }, i * 500);
+            }
+        }
+        
+        function createBrokenHearts() {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'broken-heart';
+                    heart.textContent = '💔';
+                    heart.style.left = (Math.random() * 80 + 10) + '%';
+                    heart.style.top = (Math.random() * 80 + 10) + '%';
+                    progressBarNegative.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        if (heart.parentNode) {
+                            heart.parentNode.removeChild(heart);
+                        }
+                    }, 3000);
+                }, i * 500);
+            }
+        }
+        
+        function createRainDrops() {
+            for (let i = 0; i < 4; i++) {
+                setTimeout(() => {
+                    const drop = document.createElement('div');
+                    drop.className = 'rain-drop';
+                    drop.textContent = '💧';
+                    drop.style.left = (Math.random() * 100 - 20) + 'px';
+                    drop.style.top = '0px';
+                    document.body.appendChild(drop);
+                    
+                    setTimeout(() => {
+                        if (drop.parentNode) {
+                            drop.parentNode.removeChild(drop);
+                        }
+                    }, 4000);
+                }, i * 300);
+            }
+        }
+        
+        function createFloatingHearts() {
+            for (let i = 0; i < 4; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'floating-heart';
+                    heart.textContent = ['💕', '💖', '💗', '💘'][Math.floor(Math.random() * 4)];
+                    heart.style.left = (Math.random() * 100 - 20) + 'px';
+                    heart.style.top = '400px';
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => {
+                        if (heart.parentNode) {
+                            heart.parentNode.removeChild(heart);
+                        }
+                    }, 4000);
+                }, i * 300);
+            }
+        }
+
+        function removeHearts() {
+            const hearts = progressBarPositive.querySelectorAll('.heart');
+            hearts.forEach(heart => {
+                if (heart.parentNode) {
+                    heart.parentNode.removeChild(heart);
+                }
+            });
+        }
+        
+        function removeBrokenHearts() {
+            const hearts = progressBarNegative.querySelectorAll('.broken-heart');
+            hearts.forEach(heart => {
+                if (heart.parentNode) {
+                    heart.parentNode.removeChild(heart);
+                }
+            });
+        }
+
+        // 自動更新示例（可選）
+        function autoUpdate() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                setProgress(progress);
+                progress += 5;
+                if (progress > 100) {
+                    progress = 0;
+                }
+            }, 200);
+            
+            // 取消自動更新（點擊任何按鈕時）
+            document.addEventListener('click', () => {
+                clearInterval(interval);
+            }, { once: true });
+        }
+
+        function adjustProgress(amount) {
+            const newProgress = Math.max(-100, Math.min(100, currentProgress + amount));
+            setProgress(newProgress);
+        }
+
+        // 鍵盤控制
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case '0': setProgress(0); break;
+                case '1': adjustProgress(1); break;
+                case '2': adjustProgress(2); break;
+                case '3': adjustProgress(3); break;
+                case '4': adjustProgress(4); break;
+                case '5': adjustProgress(5); break;
+                case '6': adjustProgress(6); break;
+                case '7': adjustProgress(7); break;
+                case '8': adjustProgress(8); break;
+                case '9': adjustProgress(9); break;
+                case 'ArrowUp': 
+                    adjustProgress(1);
+                    break;
+                case 'ArrowDown':
+                    adjustProgress(-1);
+                    break;
+                case '-':
+                case '_':
+                    adjustProgress(-5);
+                    break;
+                case '+':
+                case '=':
+                    adjustProgress(5);
+                    break;
+            }
+        });
+
+        // WebSocket 連接用於即時更新
+        let ws = null;
+        let connectionStatus = 'disconnected';
+        
+        function connectWebSocket() {
+            try {
+                // 嘗試連接到 WebSocket 服務器
+                ws = new WebSocket('ws://localhost:8080');
+                
+                ws.onopen = function() {
+                    connectionStatus = 'connected';
+                    console.log('✅ WebSocket 連接成功');
+                    updateConnectionIndicator();
+                };
+                
+                ws.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        handleWebSocketMessage(data);
+                    } catch (error) {
+                        console.error('解析 WebSocket 訊息失敗:', error);
+                    }
+                };
+                
+                ws.onclose = function() {
+                    connectionStatus = 'disconnected';
+                    console.log('❌ WebSocket 連接已斷開');
+                    updateConnectionIndicator();
+                    
+                    // 嘗試重新連接
+                    setTimeout(connectWebSocket, 3000);
+                };
+                
+                ws.onerror = function(error) {
+                    connectionStatus = 'error';
+                    console.error('WebSocket 錯誤:', error);
+                    updateConnectionIndicator();
+                };
+                
+            } catch (error) {
+                console.error('WebSocket 連接失敗:', error);
+                setTimeout(connectWebSocket, 5000);
+            }
+        }
+        
+        function handleWebSocketMessage(data) {
+            switch(data.type) {
+                case 'progress_update':
+                    setProgress(data.progress);
+                    console.log(`📈 進度更新: ${data.progress}%`);
+                    break;
+                    
+                case 'analysis_result':
+                    console.log('🔍 情感分析:', data.analysis);
+                    showAnalysisNotification(data.analysis, data.progressChange);
+                    break;
+                    
+                case 'chat_message':
+                    console.log(`💬 [${data.username}]: ${data.text}`);
+                    break;
+                    
+                default:
+                    console.log('收到未知訊息類型:', data.type);
+            }
+        }
+        
+        function updateConnectionIndicator() {
+            // 更新連接狀態指示器（如果有的話）
+            const indicator = document.getElementById('connectionStatus');
+            if (indicator) {
+                indicator.textContent = connectionStatus === 'connected' ? '🟢' : '🔴';
+                indicator.title = connectionStatus === 'connected' ? '已連接' : '未連接';
+            }
+        }
+        
+        function showAnalysisNotification(analysis, progressChange) {
+            // 創建分析結果通知
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 10px;
+                border-radius: 5px;
+                font-size: 12px;
+                z-index: 1000;
+                max-width: 200px;
+            `;
+            
+            const emoji = analysis.sentiment === 'positive' ? '😊' : 
+                         analysis.sentiment === 'negative' ? '😞' : '😐';
+            
+            notification.innerHTML = `
+                ${emoji} ${analysis.sentiment}<br>
+                分數: ${analysis.score}<br>
+                變化: ${progressChange.change > 0 ? '+' : ''}${progressChange.change}%<br>
+                <small>${analysis.reason}</small>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // 3秒後移除通知
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+        
+        // 初始化
+        setProgress(0);
+        
+        // 連接 WebSocket（如果可用）
+        if (typeof WebSocket !== 'undefined') {
+            connectWebSocket();
+        } else {
+            console.log('WebSocket 不可用，使用手動模式');
+        }
+    </script>
+</body>
+</html>
