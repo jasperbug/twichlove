@@ -133,9 +133,21 @@ class ProgressWebSocketServer {
     // 啟動服務器
     start() {
         return new Promise((resolve, reject) => {
+            // 檢查服務器是否已經在監聽
+            if (this.server.listening) {
+                console.log(`⚡ WebSocket 服務器已在運行中 (埠號 ${this.port})`);
+                resolve();
+                return;
+            }
+            
             this.server.listen(this.port, (error) => {
                 if (error) {
-                    reject(error);
+                    if (error.code === 'EADDRINUSE') {
+                        console.log(`⚡ 埠號 ${this.port} 已被占用，WebSocket 服務器可能已在運行`);
+                        resolve();
+                    } else {
+                        reject(error);
+                    }
                 } else {
                     console.log(`🚀 WebSocket 服務器啟動成功`);
                     console.log(`📺 進度條網址: http://localhost:${this.port}`);
