@@ -31,8 +31,8 @@
 
 1. 複製專案到本地：
 ```bash
-git clone https://github.com/jasperbug/twitchlove
-cd twitchlove
+git clone https://github.com/jasperbug/twichlove
+cd twichlove
 ```
 
 2. 安裝相依套件：
