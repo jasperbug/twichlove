@@ -7,7 +7,7 @@ class SentimentAnalyzer {
             apiKey: process.env.OPENAI_API_KEY,
         });
         
-        this.systemPrompt = `你是一個專業的聊天室情感分析師。你需要分析 Twitch 聊天室的訊息，判斷觀眾對主播的態度和情感。
+        this.systemPrompt = `你是一個專業的聊天室情感分析師。你需要分析聊天室的訊息，判斷觀眾對主播的態度和情感。
 
 重要資訊：
 - 主播的名字是
