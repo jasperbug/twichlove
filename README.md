@@ -45,7 +45,7 @@ OPENAI_API_KEY=your_openai_api_key_here
 node twitch-chat-controller.js 頻道名稱
 
 # 連接到主播「你家蟲子」的頻道
-node twitch-chat-controller.js 你家蟲子
+node twitch-chat-controller.js buuuggyy
 
 # 使用預設測試頻道
 npm test
@@ -63,7 +63,7 @@ node full-reset.js
 ### 實際範例
 ```bash
 # 連接到主播頻道
-node twitch-chat-controller.js 你家蟲子
+node twitch-chat-controller.js buuuggyy
 node twitch-chat-controller.js ninja
 node twitch-chat-controller.js pokimane
 ```
