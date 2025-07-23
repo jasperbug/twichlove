@@ -72,7 +72,7 @@ node twitch-chat-controller.js pokimane
 
 1. 啟動程式連接到聊天室
 2. 在 OBS 中新增「瀏覽器來源」
-3. 設定 URL 為：`file:///完整路徑/vertical-progress-bar.html`
+3. 設定 URL 為：`localhost:8080`
 4. 設定寬度：120px，高度：600px
 5. 勾選「透明背景」選項
 6. 進度條具有白色外框，文字清晰可見
