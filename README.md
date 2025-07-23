@@ -22,8 +22,8 @@
 
 1. 複製專案到本地：
 ```bash
-git clone <repository-url>
-cd twitch-chat-progress-controller
+git clone https://github.com/jasperbug/twichlove
+cd twitchlove
 ```
 
 2. 安裝相依套件：
