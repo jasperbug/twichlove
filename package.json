@@ -1,5 +1,5 @@
 {
-  "name": "twitch-chat-progress-controller",
+  "name": "twitchlove",
   "version": "1.0.0",
   "description": "多平台聊天室好感度監控程式 (支援 Twitch 和 YouTube)",
   "main": "twitch-chat-controller.js",
