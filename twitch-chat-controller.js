@@ -38,11 +38,13 @@ class TwitchChatController {
 
     // 連接到 Twitch 聊天室
     async connect() {
-        // 先啟動 WebSocket 服務器
-        try {
-            await this.wsServer.start();
-        } catch (error) {
-            console.error('WebSocket 服務器啟動失敗:', error);
+        // 先啟動 WebSocket 服務器（如果可用）
+        if (this.wsServer) {
+            try {
+                await this.wsServer.start();
+            } catch (error) {
+                console.error('WebSocket 服務器啟動失敗:', error);
+            }
         }
         
         console.log(`正在連接到 Twitch 聊天室: ${this.channel}`);
@@ -93,8 +95,10 @@ class TwitchChatController {
                 this.messageCount++;
                 console.log(`💬 [${chatMessage.username}]: ${chatMessage.text}`);
                 
-                // 廣播聊天訊息
-                this.wsServer.sendChatMessage(chatMessage);
+                // 廣播聊天訊息（如果 WebSocket 服務器可用）
+                if (this.wsServer) {
+                    this.wsServer.sendChatMessage(chatMessage);
+                }
                 
                 // 進行情感分析和進度調整
                 this.processChatMessage(chatMessage);
@@ -212,11 +216,13 @@ class TwitchChatController {
             const progressChange = this.progressController.adjustProgressBySentiment(analysis);
             
             // 廣播分析結果（包含過濾資訊）
-            this.wsServer.sendAnalysisResult({
-                ...analysis,
-                originalMessage: chatMessage.text,
-                filteredMessage: messageToAnalyze
-            }, progressChange);
+            if (this.wsServer) {
+                this.wsServer.sendAnalysisResult({
+                    ...analysis,
+                    originalMessage: chatMessage.text,
+                    filteredMessage: messageToAnalyze
+                }, progressChange);
+            }
             
             console.log(`📈 進度更新: ${progressChange.oldProgress}% → ${progressChange.newProgress}% (${progressChange.change > 0 ? '+' : ''}${progressChange.change}%)`);
             
