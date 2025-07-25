@@ -47,6 +47,14 @@ class ProgressWebSocketServer {
     }
 
     handleHttpRequest(req, res) {
+        const url = new URL(req.url, `http://${req.headers.host}`);
+        
+        // API 路由處理
+        if (url.pathname.startsWith('/api/')) {
+            this.handleApiRequest(req, res, url);
+            return;
+        }
+        
         let filePath = req.url === '/' ? '/vertical-progress-bar.html' : req.url;
         filePath = path.join(__dirname, filePath);
         
@@ -75,6 +83,60 @@ class ProgressWebSocketServer {
         
         res.writeHead(200, { 'Content-Type': contentType });
         fs.createReadStream(filePath).pipe(res);
+    }
+    
+    handleApiRequest(req, res, url) {
+        // 設定 CORS 和 Content-Type
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Content-Type', 'application/json');
+        
+        if (req.method === 'OPTIONS') {
+            res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+            res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+            res.writeHead(200);
+            res.end();
+            return;
+        }
+        
+        // 手動進度控制 API
+        if (url.pathname === '/api/progress' && req.method === 'POST') {
+            let body = '';
+            req.on('data', chunk => {
+                body += chunk.toString();
+            });
+            req.on('end', () => {
+                try {
+                    const data = JSON.parse(body);
+                    const result = this.handleProgressControl(data);
+                    res.writeHead(200);
+                    res.end(JSON.stringify(result));
+                } catch (error) {
+                    res.writeHead(400);
+                    res.end(JSON.stringify({ error: 'Invalid JSON' }));
+                }
+            });
+            return;
+        }
+        
+        // 獲取當前進度 API
+        if (url.pathname === '/api/progress' && req.method === 'GET') {
+            const result = {
+                progress: this.currentProgress,
+                timestamp: new Date().toISOString()
+            };
+            res.writeHead(200);
+            res.end(JSON.stringify(result));
+            return;
+        }
+        
+        // 404 for unknown API routes
+        res.writeHead(404);
+        res.end(JSON.stringify({ error: 'API route not found' }));
+    }
+    
+    handleProgressControl(data) {
+        // 這個方法會被 MultiPlatformController 覆蓋
+        return { error: 'Progress control not implemented' };
     }
 
     // 更新進度並廣播給所有客戶端
