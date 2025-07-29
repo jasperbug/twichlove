@@ -1,0 +1,80 @@
+{
+  "positive_keywords": {
+    "超棒": 5,
+    "太神了": 4,
+    "好可愛": 3,
+    "喜歡": 2,
+    "不錯": 1,
+    "666": 2,
+    "牛": 3,
+    "強": 2,
+    "讚": 2,
+    "好": 1,
+    "棒": 2,
+    "厲害": 3,
+    "帥": 2,
+    "美": 2,
+    "可愛": 3,
+    "愛你": 4,
+    "支持": 2,
+    "加油": 2
+  },
+  "negative_keywords": {
+    "爛": -3,
+    "無聊": -2,
+    "不喜歡": -2,
+    "差": -1,
+    "糟": -2,
+    "垃圾": -4,
+    "討厭": -3,
+    "煩": -2,
+    "吵": -1,
+    "醜": -3,
+    "笨": -2,
+    "蠢": -3,
+    "白癡": -4,
+    "傻": -2
+  },
+  "special_keywords": {
+    "生日快樂": 5,
+    "新年快樂": 4,
+    "聖誕快樂": 4,
+    "恭喜": 3,
+    "謝謝": 2,
+    "感謝": 3,
+    "辛苦了": 2,
+    "早安": 1,
+    "晚安": 1,
+    "哈囉": 1,
+    "嗨": 1,
+    "hello": 1,
+    "hi": 1
+  },
+  "personality_modifiers": {
+    "friendly": {
+      "positive_multiplier": 1.0,
+      "negative_multiplier": 0.8,
+      "description": "友善型主播，對負面訊息較為寬容"
+    },
+    "tsundere": {
+      "positive_multiplier": 0.7,
+      "negative_multiplier": 1.2,
+      "description": "傲嬌型主播，對讚美保守，對調侃有特殊反應"
+    },
+    "shy": {
+      "positive_multiplier": 1.3,
+      "negative_multiplier": 1.1,
+      "description": "害羞型主播，對讚美反應強烈"
+    },
+    "energetic": {
+      "positive_multiplier": 1.5,
+      "negative_multiplier": 0.9,
+      "description": "活力型主播，對正面訊息反應激烈"
+    },
+    "professional": {
+      "positive_multiplier": 0.9,
+      "negative_multiplier": 0.7,
+      "description": "專業型主播，情緒反應較為穩定"
+    }
+  }
+}

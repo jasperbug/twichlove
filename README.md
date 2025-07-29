@@ -13,12 +13,16 @@
 - 🤖 **GPT-4 情感分析**: 使用 OpenAI GPT-4.1-mini 分析訊息情感
 - 💰 **SuperChat 加成**: YouTube 付費留言自動額外加分
 - 🎯 **智能過濾**: 自動過濾機器人訊息、貼圖和重複內容
+- 🎭 **主播人設**: 支援自定義主播個性設定，影響情感分析結果
+- 📝 **關鍵字規則**: 可自定義好感度觸發關鍵字和權重
 
 ### 📊 視覺化與統計
-- 📈 **美觀進度條**: 垂直好感度進度條，白色外框透明背景，適合OBS
-- 🌐 **WebSocket 即時同步**: 進度條數據即時更新到網頁界面
+- 📈 **七階段情感狀態**: 從極度憤怒到完全沉醉的細緻情感分級系統
+- 💝 **情感強度顯示**: 每個階段內0-100%的強度百分比
+- 🌐 **WebSocket 即時同步**: 進度條和情感狀態即時更新到網頁界面
 - 📋 **多平台統計**: 提供詳細的聊天分析統計資訊
 - 🔄 **進度管理**: 支援手動重置和完全清空歷史記錄
+- 🎨 **自動回調系統**: 無新訊息時自動往中性狀態回調
 
 ## 系統需求
 
@@ -55,6 +59,167 @@ YOUTUBE_CHANNEL_NAME=你的YouTube頻道名稱
 PROGRESS_UPDATE_INTERVAL=1000
 MAX_PROGRESS=100
 MIN_PROGRESS=-100
+
+# 自動回調系統設定
+AUTO_DECAY_INTERVAL=180000    # 3分鐘無活動後開始回調 (毫秒)
+DECAY_RATE_HIGH=3            # 高強度回調幅度 (±50%以上時)
+DECAY_RATE_MEDIUM=2          # 中強度回調幅度 (20-50%時)
+DECAY_RATE_LOW=1             # 低強度回調幅度 (20%以下時)
+
+# 主播人設配置
+STREAMER_PERSONALITY=friendly    # 主播個性: friendly/tsundere/shy/energetic/professional
+CUSTOM_KEYWORDS_ENABLED=true     # 啟用自定義關鍵字
+STICKER_FILTER_ENABLED=true      # 啟用貼圖過濾
+
+# AI分析設定
+OPENAI_MODEL=gpt-4o-mini        # AI模型選擇
+ANALYSIS_LANGUAGE=zh-TW         # 分析語言
+SENTIMENT_SENSITIVITY=medium    # 情感分析敏感度: low/medium/high
+```
+
+## ✨ 七階段情感狀態系統
+
+### 情感分級詳細說明
+
+本系統將聊天室的整體情感分為七個階段，每個階段都有對應的表情符號、顏色和強度百分比：
+
+| 進度範圍 | 情感狀態 | 表情符號 | 顏色 | 描述 |
+|---------|---------|---------|------|------|
+| `-100% ~ -70%` | **極度憤怒** | 😤 | #8B0000 (深紅) | 極度憤怒/厭惡狀態 |
+| `-70% ~ -30%` | **不滿生氣** | 😠 | #FF4500 (橙紅) | 不滿/生氣情緒 |
+| `-30% ~ 0%` | **冷淡疏離** | 😐 | #808080 (灰色) | 冷淡/疏離狀態 |
+| `0% ~ 30%` | **友善好感** | 😊 | #32CD32 (綠色) | 友善/好感狀態 |
+| `30% ~ 70%` | **喜愛迷戀** | 😍 | #FF69B4 (粉紅) | 喜愛/迷戀狀態 |
+| `70% ~ 90%` | **深深愛慕** | 💕 | #FF1493 (深粉) | 深深愛慕狀態 |
+| `90% ~ 100%` | **完全沉醉** | 💖 | #DC143C (深紅) | 完全沉醉狀態 |
+
+### 情感強度計算
+
+每個階段內都有 **0-100%** 的強度百分比：
+- **0%**: 剛進入該階段
+- **50%**: 該階段中等強度
+- **100%**: 該階段最高強度（即將進入下一階段）
+
+### 自動回調機制
+
+系統具有智能回調功能，3分鐘無新訊息時自動往中性狀態(0%)回調：
+- **高強度回調** (±50%以上): 每次回調 3%
+- **中強度回調** (20-50%): 每次回調 2%  
+- **低強度回調** (20%以下): 每次回調 1%
+
+### 情感狀態轉換示例
+
+```
+冷淡疏離 (-15%) → 收到正面訊息 → 友善好感 (5%)
+友善好感 (25%) → 收到SuperChat → 喜愛迷戀 (35%)
+喜愛迷戀 (60%) → 長時間無訊息 → 自動回調至 (57%)
+```
+
+## 🎭 主播人設系統
+
+### 支援的主播人設類型
+
+系統支援多種主播人設，影響AI對訊息的情感分析結果：
+
+#### 1. **友善型 (friendly)** - 預設
+- 對正面訊息反應積極
+- 對負面訊息較為寬容
+- 適合溫和友善的主播
+
+#### 2. **傲嬌型 (tsundere)**
+- 對讚美訊息反應較為保守
+- 對調侃訊息有特殊加分
+- 符合傲嬌角色設定
+
+#### 3. **害羞型 (shy)**
+- 對直接讚美反應強烈
+- 對過於熱情的訊息會降低分數
+- 適合內向害羞的主播
+
+#### 4. **活力型 (energetic)**
+- 對所有正面訊息都有高分加成
+- 反應較為激烈
+- 適合活潑外向的主播
+
+#### 5. **專業型 (professional)**
+- 注重訊息內容品質
+- 對無意義訊息過濾更嚴格
+- 適合知識型/教學型主播
+
+### 人設配置方法
+
+在 `.env` 檔案中設定：
+```env
+STREAMER_PERSONALITY=tsundere
+```
+
+或在程式啟動時指定：
+```bash
+STREAMER_PERSONALITY=shy npm start
+```
+
+## 🎯 自定義配置系統
+
+### 貼圖過濾設定
+
+系統可以智能識別和過濾各種貼圖訊息，包括：
+
+#### Twitch 貼圖過濾
+- **全域表情符號**: Kappa, PogChamp, LUL 等
+- **頻道專屬表情**: 根據頻道自動識別
+- **BTTV/FFZ表情**: 第三方表情符號
+- **純表情訊息**: 只有表情符號的訊息
+
+#### YouTube 貼圖過濾  
+- **系統表情符號**: 😀😂❤️ 等 Unicode 表情符號
+- **YouTube 專屬表情**: :youtube_emoji: 格式
+- **Super Stickers**: 付費貼圖（但仍會計算付費加成）
+
+#### 貼圖過濾配置
+```env
+# 啟用貼圖過濾
+STICKER_FILTER_ENABLED=true
+
+# 貼圖過濾嚴格程度
+STICKER_FILTER_STRICT=medium    # loose/medium/strict
+
+# 允許的表情符號比例（訊息中表情符號佔比）
+MAX_EMOJI_RATIO=0.5            # 50%以上表情符號的訊息會被過濾
+```
+
+### 自定義關鍵字規則
+
+可以設定特定關鍵字的好感度加成：
+
+#### 關鍵字配置檔案 `keywords-config.json`
+```json
+{
+  "positive_keywords": {
+    "超棒": 5,
+    "太神了": 4,
+    "好可愛": 3,
+    "喜歡": 2,
+    "不錯": 1
+  },
+  "negative_keywords": {
+    "爛": -3,
+    "無聊": -2,
+    "不喜歡": -2,
+    "差": -1
+  },
+  "special_keywords": {
+    "主播名字": 3,
+    "生日快樂": 5,
+    "新年快樂": 4
+  }
+}
+```
+
+#### 關鍵字權重設定
+```env
+CUSTOM_KEYWORDS_ENABLED=true
+KEYWORD_WEIGHT_MULTIPLIER=1.5    # 關鍵字權重倍數
+KEYWORD_CASE_SENSITIVE=false     # 是否區分大小寫
 ```
 
 ## 使用方法
@@ -175,16 +340,30 @@ npm run youtube            # 使用 .env 中的 YouTube 頻道
 ┌─────────────────────────────────────────────────────────────────┐
 │                    多平台統一控制器                              │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐               │
-│  │ 訊息過濾器   │  │ 進度控制器   │  │ 統計分析     │               │
-│  │ (防機器人)  │  │ (WebSocket) │  │   模組      │               │
+│  │ 智能過濾器   │  │ 情感分析     │  │ 進度控制器   │               │
+│  │ 貼圖/機器人  │  │ 主播人設     │  │ 七階段狀態   │               │
+│  └─────────────┘  └─────────────┘  └─────────────┘               │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐               │
+│  │ 關鍵字系統   │  │ 自動回調     │  │ 統計分析     │               │
+│  │ 自定義規則   │  │   機制      │  │   模組      │               │
 │  └─────────────┘  └─────────────┘  └─────────────┘               │
 └─────────────────────────────────────────────────────────────────┘
                                │
                                v
                     ┌─────────────────┐
-                    │   HTML 進度條   │
-                    │  (視覺化介面)   │
+                    │ 情感狀態進度條   │
+                    │ 😤😠😐😊😍💕💖  │
+                    │  (WebSocket)    │
                     └─────────────────┘
+```
+
+### 情感分析流程
+```
+聊天訊息 → 貼圖過濾 → 主播人設分析 → 關鍵字匹配 → 情感分數
+    ↓
+七階段狀態計算 → 強度百分比 → WebSocket廣播 → 進度條更新
+    ↓
+自動回調計時器重置 → 3分鐘後無活動 → 自動往中性回調
 ```
 
 ## 已實現功能
@@ -200,7 +379,8 @@ npm run youtube            # 使用 .env 中的 YouTube 頻道
 - 即時聊天訊息接收與解析
 - OpenAI GPT-4 驅動的情感分析
 - 智能訊息過濾（機器人、重複訊息、貼圖）
-- 好感度數值自動計算與調整
+- 七階段情感狀態系統（😤😠😐😊😍💕💖）
+- 情感強度百分比計算（0-100%）
 - WebSocket 服務器（埠號 8080）
 - 美觀的垂直進度條界面
 - 透明背景支援（適合 OBS）
@@ -209,11 +389,14 @@ npm run youtube            # 使用 .env 中的 YouTube 頻道
 ✅ **進階功能:**
 - YouTube SuperChat 付費留言加成
 - 多平台統計與分析報表
-- 自定義關鍵字規則
+- 主播人設系統（5種個性類型）
+- 自定義關鍵字規則和權重
 - 頻道專屬貼圖過濾
+- 自動回調機制（3分鐘無活動）
 - 即時數據同步
 - 響應式進度條動畫
 - 聊天頻率統計
+- 情感狀態變化檢測
 
 ## 檔案結構
 
@@ -241,14 +424,172 @@ npm run youtube            # 使用 .env 中的 YouTube 頻道
     └── README.md                       # 專案說明文件
 ```
 
-## API 說明
+## 🔧 API 參考
 
-### 環境變數
+### 環境變數完整列表
+
+#### 基本設定
 - `OPENAI_API_KEY`: OpenAI API 金鑰（必需）
+- `TWITCH_CHANNEL`: 預設 Twitch 頻道名稱
+- `YOUTUBE_CHANNEL_ID`: 預設 YouTube 頻道 ID
+- `YOUTUBE_CHANNEL_NAME`: 預設 YouTube 頻道名稱
 
-### WebSocket 端點
-- 本地服務器: `ws://localhost:8080`
-- 資料格式: JSON `{"progress": 0-100, "sentiment": "positive/negative/neutral"}`
+#### 進度控制
+- `PROGRESS_UPDATE_INTERVAL`: 進度更新間隔（毫秒，預設：1000）
+- `MAX_PROGRESS`: 最大進度值（預設：100）
+- `MIN_PROGRESS`: 最小進度值（預設：-100）
+
+#### 自動回調系統
+- `AUTO_DECAY_INTERVAL`: 自動回調間隔（毫秒，預設：180000）
+- `DECAY_RATE_HIGH`: 高強度回調幅度（預設：3）
+- `DECAY_RATE_MEDIUM`: 中強度回調幅度（預設：2）
+- `DECAY_RATE_LOW`: 低強度回調幅度（預設：1）
+
+#### 主播人設
+- `STREAMER_PERSONALITY`: 主播個性類型（預設：friendly）
+  - `friendly`: 友善型
+  - `tsundere`: 傲嬌型
+  - `shy`: 害羞型
+  - `energetic`: 活力型
+  - `professional`: 專業型
+
+#### 過濾系統
+- `STICKER_FILTER_ENABLED`: 啟用貼圖過濾（預設：true）
+- `STICKER_FILTER_STRICT`: 過濾嚴格程度（loose/medium/strict）
+- `MAX_EMOJI_RATIO`: 表情符號比例上限（預設：0.5）
+- `CUSTOM_KEYWORDS_ENABLED`: 啟用自定義關鍵字（預設：true）
+- `KEYWORD_WEIGHT_MULTIPLIER`: 關鍵字權重倍數（預設：1.5）
+- `KEYWORD_CASE_SENSITIVE`: 關鍵字區分大小寫（預設：false）
+
+#### AI 分析
+- `OPENAI_MODEL`: AI 模型選擇（預設：gpt-4o-mini）
+- `ANALYSIS_LANGUAGE`: 分析語言（預設：zh-TW）
+- `SENTIMENT_SENSITIVITY`: 情感分析敏感度（low/medium/high）
+
+### WebSocket API
+
+#### 連接端點
+- **本地服務器**: `ws://localhost:8080`
+- **連接協議**: WebSocket
+
+#### 傳送資料格式
+```json
+{
+  "progress": 45,
+  "currentEmotion": {
+    "name": "喜愛迷戀",
+    "emoji": "😍",
+    "color": "#FF69B4",
+    "intensity": 38,
+    "range": [30, 70]
+  },
+  "oldEmotion": {
+    "name": "友善好感",
+    "emoji": "😊",
+    "color": "#32CD32",
+    "intensity": 83,
+    "range": [0, 30]
+  },
+  "emotionChanged": true,
+  "change": 15,
+  "platformStats": {
+    "twitch": {
+      "channel": "shroud",
+      "messageCount": 1234
+    },
+    "youtube": {
+      "channel": "頻道名稱",
+      "messageCount": 567
+    }
+  },
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+#### 手動控制 API
+- **端點**: `POST http://localhost:8080/api/progress`
+- **Content-Type**: `application/json`
+
+**調整進度**：
+```json
+{
+  "action": "adjust",
+  "amount": 5
+}
+```
+
+**設定特定進度**：
+```json
+{
+  "action": "set",
+  "value": 50
+}
+```
+
+**重置進度**：
+```json
+{
+  "action": "reset"
+}
+```
+
+**回應格式**：
+```json
+{
+  "success": true,
+  "oldProgress": 45,
+  "newProgress": 50,
+  "change": 5,
+  "timestamp": "2024-01-01T12:00:00.000Z"
+}
+```
+
+### 配置檔案
+
+#### `keywords-config.json` 結構
+```json
+{
+  "positive_keywords": {
+    "關鍵字": 權重值(數字)
+  },
+  "negative_keywords": {
+    "關鍵字": 權重值(負數)
+  },
+  "special_keywords": {
+    "特殊關鍵字": 權重值
+  },
+  "personality_modifiers": {
+    "friendly": {
+      "positive_multiplier": 1.0,
+      "negative_multiplier": 0.8
+    },
+    "tsundere": {
+      "positive_multiplier": 0.7,
+      "negative_multiplier": 1.2
+    }
+  }
+}
+```
+
+#### `progress-data.json` 結構
+```json
+{
+  "currentProgress": 45,
+  "lastUpdated": "2024-01-01T12:00:00.000Z",
+  "history": [
+    {
+      "timestamp": "2024-01-01T12:00:00.000Z",
+      "oldProgress": 40,
+      "newProgress": 45,
+      "change": 5,
+      "metadata": {
+        "platform": "Twitch",
+        "channel": "shroud"
+      }
+    }
+  ]
+}
+```
 
 ## 技術規格
 
@@ -295,6 +636,7 @@ npm run youtube            # 使用 .env 中的 YouTube 頻道
 🚫 已過濾: 78
 🔍 分析總數: 378
 📈 當前進度: 23%
+💝 情感狀態: 😊 友善好感 (強度: 77%)
 📊 過濾率: 17%
 ========================
 ```
@@ -318,6 +660,7 @@ npm run youtube            # 使用 .env 中的 YouTube 頻道
 🚫 已過濾: 45
 🔍 分析總數: 189
 📈 當前進度: 32%
+💝 情感狀態: 😍 喜愛迷戀 (強度: 5%)
 📊 過濾率: 19%
 ========================
 ```
@@ -327,8 +670,14 @@ npm run youtube            # 使用 .env 中的 YouTube 頻道
 🚀 啟動多平台聊天室好感度分析器
 📺 監控平台: Twitch: shroud, YouTube: UCOsFUU8EtJGDd6-AouF_MwQ
 💬 總訊息數: 1,234
-📈 平均進度: 28%
+🎯 統一進度: 28% (平等權重)
+💝 情感狀態: 😊 友善好感 (強度: 93%)
 🔗 活躍連接: 2 個平台
+
+🔄 情感狀態變化記錄:
+✨ 情感狀態改變: 😐 冷淡疏離 → 😊 友善好感
+✨ 情感狀態改變: 😊 友善好感 → 😍 喜愛迷戀
+📉 執行自動回調: 35% → 32% (-3%)
 ```
 
 ## 進度條重置

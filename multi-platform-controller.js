@@ -12,6 +12,17 @@ class UnifiedProgressManager {
         this.lastUpdateTime = new Date();
         this.history = []; // 進度變化歷史
         
+        // 七階段情感狀態定義
+        this.emotionLevels = [
+            { range: [-100, -70], name: '極度憤怒', emoji: '😤', color: '#8B0000', description: '極度憤怒/厭惡' },
+            { range: [-70, -30], name: '不滿生氣', emoji: '😠', color: '#FF4500', description: '不滿/生氣' },
+            { range: [-30, 0], name: '冷淡疏離', emoji: '😐', color: '#808080', description: '冷淡/疏離' },
+            { range: [0, 30], name: '友善好感', emoji: '😊', color: '#32CD32', description: '友善/好感' },
+            { range: [30, 70], name: '喜愛迷戀', emoji: '😍', color: '#FF69B4', description: '喜愛/迷戀' },
+            { range: [70, 90], name: '深深愛慕', emoji: '💕', color: '#FF1493', description: '深深愛慕' },
+            { range: [90, 100], name: '完全沉醉', emoji: '💖', color: '#DC143C', description: '完全沉醉' }
+        ];
+        
         // 自動回調系統
         this.autoDecayTimer = null;
         this.decayConfig = {
@@ -103,17 +114,25 @@ class UnifiedProgressManager {
             };
         });
         
+        // 獲取當前和之前的情感狀態
+        const currentEmotion = this.getCurrentEmotionState();
+        const oldEmotion = this.getEmotionStateByProgress(oldProgress);
+        
         // 通過 WebSocket 廣播
         this.wsServer.updateProgress(this.unifiedProgress, {
             type: 'unified_progress',
             change: change,
             oldProgress: oldProgress,
+            currentEmotion: currentEmotion,
+            oldEmotion: oldEmotion,
+            emotionChanged: currentEmotion.name !== oldEmotion.name,
             platformStats: platformStats,
             timestamp: this.lastUpdateTime,
             ...metadata
         });
         
-        console.log(`🎯 統一進度更新: ${oldProgress}% → ${this.unifiedProgress}% (${change > 0 ? '+' : ''}${change}%)`);
+        const emotionInfo = `${currentEmotion.emoji} ${currentEmotion.name} (${currentEmotion.intensity}%)`;
+        console.log(`🎯 統一進度更新: ${oldProgress}% → ${this.unifiedProgress}% (${change > 0 ? '+' : ''}${change}%) | ${emotionInfo}`);
     }
     
     // 重置進度
@@ -130,6 +149,85 @@ class UnifiedProgressManager {
     // 獲取當前統一進度
     getUnifiedProgress() {
         return this.unifiedProgress;
+    }
+    
+    // 根據進度值計算當前情感狀態
+    getCurrentEmotionState() {
+        const progress = this.unifiedProgress;
+        
+        for (const level of this.emotionLevels) {
+            const [min, max] = level.range;
+            if (progress >= min && progress < max) {
+                return {
+                    ...level,
+                    progress: progress,
+                    intensity: this.calculateIntensity(progress, level.range)
+                };
+            }
+        }
+        
+        // 處理邊界情況 (100%)
+        if (progress === 100) {
+            const lastLevel = this.emotionLevels[this.emotionLevels.length - 1];
+            return {
+                ...lastLevel,
+                progress: progress,
+                intensity: 100
+            };
+        }
+        
+        // 預設值（理論上不應該到達這裡）
+        return {
+            range: [0, 0],
+            name: '未知狀態',
+            emoji: '❓',
+            color: '#000000',
+            description: '未知狀態',
+            progress: progress,
+            intensity: 0
+        };
+    }
+    
+    // 計算在該情感階段內的強度百分比
+    calculateIntensity(progress, range) {
+        const [min, max] = range;
+        if (max === min) return 100;
+        return Math.round(((progress - min) / (max - min)) * 100);
+    }
+    
+    // 根據指定進度值獲取情感狀態（用於比較舊狀態）
+    getEmotionStateByProgress(progress) {
+        for (const level of this.emotionLevels) {
+            const [min, max] = level.range;
+            if (progress >= min && progress < max) {
+                return {
+                    ...level,
+                    progress: progress,
+                    intensity: this.calculateIntensity(progress, level.range)
+                };
+            }
+        }
+        
+        // 處理邊界情況 (100%)
+        if (progress === 100) {
+            const lastLevel = this.emotionLevels[this.emotionLevels.length - 1];
+            return {
+                ...lastLevel,
+                progress: progress,
+                intensity: 100
+            };
+        }
+        
+        // 預設值
+        return {
+            range: [0, 0],
+            name: '未知狀態',
+            emoji: '❓',
+            color: '#000000',
+            description: '未知狀態',
+            progress: progress,
+            intensity: 0
+        };
     }
     
     // 獲取平台統計
@@ -408,6 +506,7 @@ class MultiPlatformController {
             // 獲取統一進度資訊
             const unifiedProgress = this.unifiedProgressManager.getUnifiedProgress();
             const platformStats = this.unifiedProgressManager.getPlatformStats();
+            const currentEmotion = this.unifiedProgressManager.getCurrentEmotionState();
             
             console.log('\n📊 ===== 多平台統計資訊 =====');
             console.log(`⏰ 運行時間: ${runtime}秒`);
@@ -416,6 +515,7 @@ class MultiPlatformController {
             console.log(`🚫 已過濾: ${totalCurrentFiltered}`);
             console.log(`🔍 分析總數: ${totalCurrentAnalyzed}`);
             console.log(`🎯 統一進度: ${unifiedProgress}% (平等權重)`);
+            console.log(`💝 情感狀態: ${currentEmotion.emoji} ${currentEmotion.name} (強度: ${currentEmotion.intensity}%)`);
             console.log(`📊 過濾率: ${filterRate}%`);
             console.log(`🔗 活躍連接: ${activeControllers} 個平台`);
             
@@ -457,9 +557,11 @@ class MultiPlatformController {
         
         const unifiedProgress = this.unifiedProgressManager.getUnifiedProgress();
         const platformStats = this.unifiedProgressManager.getPlatformStats();
+        const currentEmotion = this.unifiedProgressManager.getCurrentEmotionState();
         
         console.log('\n📝 目前監控的頻道:');
         console.log(`🎯 統一進度: ${unifiedProgress}%`);
+        console.log(`💝 情感狀態: ${currentEmotion.emoji} ${currentEmotion.name} (強度: ${currentEmotion.intensity}%)`);
         console.log('');
         
         this.controllers.forEach((controller, key) => {

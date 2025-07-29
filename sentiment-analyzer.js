@@ -15,10 +15,10 @@ class SentimentAnalyzer {
 
 請分析每條訊息並回傳 JSON 格式：
 {
-    "sentiment": "positive/neutral/negative",
-    "score": -5到+5的分數,
-    "reason": "簡短的分析原因",
-    "category": "praise/support/neutral/criticism/toxic"
+    "sentiment": "positive/neutral/negative" (必須是字串),
+    "score": -5到+5的分數 (數字),
+    "reason": "簡短的分析原因" (字串),
+    "category": "praise/support/neutral/criticism/toxic" (字串)
 }
 
 評分標準：
@@ -69,6 +69,17 @@ class SentimentAnalyzer {
             console.log('GPT-4.1-mini 原始回應:', content);
             
             const result = JSON.parse(content);
+            
+            // 修復格式問題：如果 sentiment 是數字，轉換為對應的字串
+            if (typeof result.sentiment === 'number') {
+                if (result.sentiment > 0) {
+                    result.sentiment = 'positive';
+                } else if (result.sentiment < 0) {
+                    result.sentiment = 'negative';
+                } else {
+                    result.sentiment = 'neutral';
+                }
+            }
             
             // 驗證結果格式
             if (!this.isValidAnalysis(result)) {
