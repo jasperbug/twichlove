@@ -342,6 +342,15 @@
         };
 
         function setProgress(percentage) {
+            // 防護措施：確保 percentage 是有效數字
+            if (percentage === null || percentage === undefined || isNaN(percentage)) {
+                console.warn('收到無效的進度值:', percentage, '使用當前進度值:', currentProgress);
+                percentage = currentProgress;
+            }
+            
+            // 確保進度值在有效範圍內
+            percentage = Math.max(-100, Math.min(100, percentage));
+            
             currentProgress = percentage;
             progressText.textContent = percentage + '%';
             

@@ -387,7 +387,7 @@ npm run youtube            # 使用 .env 中的 YouTube 頻道
 - 優雅的錯誤處理與重連機制
 
 ✅ **進階功能:**
-- YouTube SuperChat 付費留言加成
+- YouTube SuperChat 付費留言加成（可調整倍率）
 - 多平台統計與分析報表
 - 主播人設系統（5種個性類型）
 - 自定義關鍵字規則和權重
@@ -397,6 +397,12 @@ npm run youtube            # 使用 .env 中的 YouTube 頻道
 - 響應式進度條動畫
 - 聊天頻率統計
 - 情感狀態變化檢測
+
+✅ **最新更新 (v2.1):**
+- 🛡️ **防護性修復**: 修復 SuperChat 事件導致進度條顯示 null 的問題
+- 🔧 **數值驗證**: 加強前端進度條數值驗證，防止無效值顯示
+- ⚡ **穩定性提升**: 改善 WebSocket 數據傳輸的錯誤處理
+- 📊 **SuperChat 調整**: SuperChat 加成數值現可在 `youtube-chat-controller.js:121` 輕鬆調整
 
 ## 檔案結構
 
@@ -747,6 +753,12 @@ A: 使用 `node reset-progress.js` 重置進度，或 `node full-reset.js` 完�
 #### 💰 SuperChat 問題
 **Q: SuperChat 沒有額外加分**
 A: 確認是 YouTube 直播且 SuperChat 功能正常，檢查程式日誌
+
+**Q: SuperChat 導致進度條顯示 "null%"**
+A: 已在 v2.1 修復此問題，更新後會自動處理無效數值並顯示警告
+
+**Q: 如何調整 SuperChat 加成數值？**
+A: 編輯 `youtube-chat-controller.js:121`，修改 `superchat.amount / 100` 中的 100 來調整換算比例，修改 `, 3` 來調整最大加成上限
 
 #### 🏷️ YouTube 頻道 ID 問題
 **Q: 如何找到 YouTube 頻道 ID？**
